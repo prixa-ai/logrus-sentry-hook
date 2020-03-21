@@ -34,7 +34,7 @@ type Hook struct {
 func New(levels []logrus.Level, options ...Option) Hook {
 	h := Hook{
 		levels:    levels,
-		hub:       sentry.CurrentHub(),
+		hub:       sentry.CurrentHub().Clone(),
 		converter: DefaultConverter,
 	}
 
