@@ -104,10 +104,7 @@ func DefaultConverter(entry *logrus.Entry, event *sentry.Event, hub *sentry.Hub)
 		}
 
 		if hub.Client().Options().AttachStacktrace {
-			exception.Stacktrace = sentry.ExtractStacktrace(err)
-			if exception.Stacktrace == nil {
-				exception.Stacktrace = sentry.NewStacktrace()
-			}
+			exception.Stacktrace = NewHookStacktrace()
 		}
 
 		event.Exception = []sentry.Exception{exception}
