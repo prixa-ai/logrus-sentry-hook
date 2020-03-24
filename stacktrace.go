@@ -1,7 +1,6 @@
 package sentryhook
 
 import (
-	"go/build"
 	"runtime"
 	"strings"
 
@@ -82,33 +81,4 @@ func filterFrames(frames []sentry.Frame) []sentry.Frame {
 	}
 
 	return filteredFrames
-}
-
-func isInAppFrame(frame sentry.Frame) bool {
-	if strings.HasPrefix(frame.AbsPath, build.Default.GOROOT) ||
-		strings.Contains(frame.Module, "vendor") ||
-		strings.Contains(frame.Module, "third_party") {
-		return false
-	}
-
-	return true
-}
-
-func callerFunctionName() string {
-	pcs := make([]uintptr, 1)
-	runtime.Callers(3, pcs)
-	callersFrames := runtime.CallersFrames(pcs)
-	callerFrame, _ := callersFrames.Next()
-	return baseName(callerFrame.Function)
-}
-
-
-// baseName returns the symbol name without the package or receiver name.
-// It replicates https://golang.org/pkg/debug/gosym/#Sym.BaseName, avoiding a
-// dependency on debug/gosym.
-func baseName(name string) string {
-	if i := strings.LastIndex(name, "."); i != -1 {
-		return name[i+1:]
-	}
-	return name
 }
